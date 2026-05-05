@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作室列表 - 上城区政协委员工作室</title>
+    <link rel="stylesheet" href="styles-classic.css">
+    <style>
+        /* Studios-specific Classic Styles */
+        .studios-header {
+            background: var(--primary);
+            padding: 50px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .studios-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23C9A227' fill-opacity='0.12'%3E%3Cpath d='M20 20L0 40V20H40z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .studios-header h1 {
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 12px;
+            position: relative;
+            letter-spacing: 6px;
+        }
+
+        .studios-header p {
+            color: var(--gold-light);
+            font-size: 15px;
+            position: relative;
+        }
+
+        .search-section {
+            padding: 24px 0;
+            background: var(--cream);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid var(--gold);
+            background: #FFF;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-box button {
+            padding: 14px 28px;
+            background: var(--primary);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .search-box button:hover {
+            background: var(--gold);
+            color: var(--primary);
+        }
+
+        .filter-bar {
+            padding: 16px 0;
+            background: var(--red-bg);
+            border-bottom: 1px solid var(--gold);
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-tag {
+            padding: 6px 14px;
+            background: #FFF;
+            border: 1px solid var(--gold);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-tag:hover,
+        .filter-tag.active {
+            background: var(--primary);
+            color: var(--gold);
+            border-color: var(--primary);
+        }
+
+        .studios-section {
+            padding: 40px 0;
+        }
+
+        .studios-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .studio-card {
+            background: #FFF;
+            border: 2px solid var(--gold);
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .studio-card:hover {
+            background: var(--primary);
+            color: var(--gold);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .studio-card:hover .studio-name,
+        .studio-card:hover .leader,
+        .studio-card:hover .address {
+            color: var(--gold);
+        }
+
+        .studio-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            margin-bottom: 0;
+        }
+
+        .studio-info {
+            padding: 16px;
+        }
+
+        .studio-name {
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--ink);
+            line-height: 1.4;
+        }
+
+        .leader {
+            font-size: 13px;
+            color: var(--ink-light);
+            margin-bottom: 6px;
+        }
+
+        .address {
+            font-size: 12px;
+            color: var(--ink-light);
+            display: flex;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--primary);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--gold);
+            color: var(--primary);
+        }
+
+        /* Detail Page */
+        .detail-header {
+            background: var(--primary);
+            padding: 40px 0;
+        }
+
+        .detail-header h1 {
+            font-size: 26px;
+            color: var(--gold);
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+        }
+
+        .detail-info {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .detail-info div {
+            font-size: 15px;
+            color: var(--gold-light);
+        }
+
+        .detail-info span {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+
+        .detail-content {
+            padding: 40px 0;
+        }
+
+        .detail-box {
+            background: #FFF;
+            border: 2px solid var(--gold);
+            padding: 28px 32px;
+            margin-bottom: 24px;
+        }
+
+        .detail-box h3 {
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gold);
+            letter-spacing: 2px;
+        }
+
+        .detail-box ul {
+            list-style: none;
+        }
+
+        .detail-box li {
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .detail-box li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-size: 10px;
+            top: 12px;
+        }
+
+        .detail-box li:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .studios-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .studios-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .detail-info {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 传统装饰纹样 -->
+    <div class="pattern-top"></div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-inner">
+                <div class="logo">
+                    <div class="logo-seal">政</div>
+                    <div class="logo-text">
+                        <h1>杭州市上城区政协</h1>
+                        <p class="subtitle">政协委员工作室</p>
+                    </div>
+                </div>
+                <nav class="nav">
+                    <a href="index-classic.html">首页</a>
+                    <a href="studios-classic.html" class="active">工作室</a>
+                    <a href="sectors-classic.html">界别介绍</a>
+                    <a href="plans-classic.html">履职计划</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="studios-header">
+        <div class="container">
+            <h1>委员工作室</h1>
+            <p>全区现有50个委员工作室，覆盖全部14个街道</p>
+        </div>
+    </section>
+
+    <section class="search-section">
+        <div class="container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索工作室名称或负责人...">
+                <button onclick="searchStudios()">搜索</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="filter-bar">
+        <div class="container">
+            <div class="filter-tags" id="filterTags">
+                <span class="filter-tag active" data-filter="all">全部</span>
+                <span class="filter-tag" data-filter="湖滨">湖滨街道</span>
+                <span class="filter-tag" data-filter="清波">清波街道</span>
+                <span class="filter-tag" data-filter="小营">小营街道</span>
+                <span class="filter-tag" data-filter="望江">望江街道</span>
+                <span class="filter-tag" data-filter="南星">南星街道</span>
+                <span class="filter-tag" data-filter="紫阳">紫阳街道</span>
+                <span class="filter-tag" data-filter="闸弄口">闸弄口街道</span>
+                <span class="filter-tag" data-filter="凯旋">凯旋街道</span>
+                <span class="filter-tag" data-filter="采荷">采荷街道</span>
+                <span class="filter-tag" data-filter="四季青">四季青街道</span>
+                <span class="filter-tag" data-filter="笕桥">笕桥街道</span>
+                <span class="filter-tag" data-filter="彭埠">彭埠街道</span>
+                <span class="filter-tag" data-filter="九堡">九堡街道</span>
+                <span class="filter-tag" data-filter="丁兰">丁兰街道</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="studios-section">
+        <div class="container">
+            <div class="studios-grid" id="studiosGrid"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p>杭州市上城区政协 © 2026</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const studiosData = [
+            {id:1,name:"政协湖滨小组委员工作室",leader:"查靖",address:"上城区羊血弄10号"},
+            {id:2,name:"政协清波小组委员工作室",leader:"徐洁",address:"上城区清波街道蔡官巷35号三楼"},
+            {id:3,name:"政协小营小组委员工作室",leader:"冷晓辉",address:"杭州市上城区建国南路98号小营街道办事处"},
+            {id:4,name:"政协望江小组委员工作室",leader:"毛静波",address:"上城区翡翠海岸1幢6号"},
+            {id:5,name:"政协南星小组委员工作��",leader:"游广敏",address:"上城区目术塘创意园2号楼7楼"},
+            {id:6,name:"紫阳街道三一委员工作室",leader:"王盈",address:"上城区金钗袋巷79号"},
+            {id:7,name:"闸弄口街道基层治理委员工作室",leader:"祝文雅",address:"上城区闸弄口街道党群服务中心"},
+            {id:8,name:"政协凯旋小组委员工作室",leader:"金志伟",address:"上城区凤起东路127号"},
+            {id:9,name:"采荷街道幸福19委员工作室",leader:"赵丹晨",address:"上城区采荷街道洁莲社区"},
+            {id:10,name:"政协四季青小组委员工作室",leader:"李岗",address:"上城区民心路280号平安金融中心B座3楼"},
+            {id:11,name:"政协笕桥小组委员工作室",leader:"阮骏",address:"上城区笕桥街道政协会议室"},
+            {id:12,name:"政协彭埠小组委员工作室",leader:"任渊",address:"上城区S2杭甬高速附近罗家老宅"},
+            {id:13,name:"政协九堡小组委员工作室",leader:"胡建清",address:"上城区九乔街与杭乔路交叉口"},
+            {id:14,name:"政协丁兰小组委员工作室",leader:"倪勇卿",address:"上城区临丁��699号丁兰街道办事处5号楼4楼"},
+            {id:15,name:"张瑞旭委员工作室",leader:"张瑞旭",address:"上城区凯旋街道凯益荟208室"},
+            {id:16,name:"缪渭川委员工作室",leader:"缪渭川",address:"上城区凯旋街道南肖埠社区"},
+            {id:17,name:"虞军红委员工作室",leader:"虞军红",address:"上城区运新花苑运新社区"},
+            {id:18,name:"商业服务智库委员工作室",leader:"姚华俊、黄晓芹",address:"上城区新业路8号UDC时代大厦3楼"},
+            {id:19,name:"俞富康宋韵文化委员工作室",leader:"俞富康",address:"上城区凯旋路151号"},
+            {id:20,name:"爱馨文化公益委员工作室",leader:"杨洁",address:"上城区南山路198号（杭州书房）"},
+            {id:21,name:"文润童心委员工作室",leader:"周媛媛",address:"杭州市上城区清波街道府学巷8号"},
+            {id:22,name:"老爸好商量委员工作室",leader:"俞富根",address:"上城区四宜路180号"},
+            {id:23,name:"侨见未来委员工作室",leader:"胡晓敏",address:"上城区兰巷101-104号（山蜂书房）"},
+            {id:24,name:"宋韵老字号委员工作室",leader:"屠明珏",address:"上城区江城路865号满江红大酒店二楼杭帮菜文化展览馆"},
+            {id:25,name:"幸福邻里委员工作室",leader:"尹兆青",address:"上城区闸弄口街道红梅社区"},
+            {id:26,name:"大健康委员工作室",leader:"谢慧淼",address:"上城区凯旋路与凯林巷交叉口凯西社区"},
+            {id:27,name:"大成委员工作室",leader:"陈磊",address:"上城区钱江路1366号华润大厦A座18层"},
+            {id:28,name:"邻聚力委员工作室",leader:"余丹凤",address:"上城区凤起东路203号中豪五福天地商业中心B座2幢21层"},
+            {id:29,name:"东港社区委员工作室",leader:"蒋平樑",address:"上城区笕桥街道东港社区"},
+            {id:30,name:"建和社区委员工作室",leader:"周建卫",address:"上城区彭埠街道建和社区"},
+            {id:31,name:"杨柳郡社区委员工作室",leader:"王鹏",address:"上城区九和路660号绿城杨柳郡"},
+            {id:32,name:"长睦幸福湾委员工作室",leader:"龚云玉",address:"上城区丁兰街道长睦苑社区"},
+            {id:33,name:"同心共富委员工作室",leader:"吴韵",address:"上城区丁兰街道皋城村文化礼堂"},
+            {id:34,name:"乐动新声委员工作室",leader:"俞宙",address:"上城区金峰大厦1503室"},
+            {id:35,name:"茗荟聚智委员工作室",leader:"王容峰",address:"上城区大井巷30-4号"},
+            {id:36,name:"上城区政协无党派界别委员工作室",leader:"凌栋",address:"上城区凯旋路247-1号4楼"},
+            {id:37,name:"上城区政协工会界别委员工作室",leader:"蔡肇颖",address:"上城区工人文化宫（太平门直街458号）"},
+            {id:38,name:"上城区政协社会福利和保障界别委员工作室",leader:"吴国庆",address:"上城区凯旋路125号（特有爱·幸福体验馆）"},
+            {id:39,name:"有意思委员工作室",leader:"方晓阳",address:"上城区复兴南街130号"},
+            {id:40,name:"春泥委员工作室",leader:"沈春妮",address:"上城区采荷路34号杭州市上城区社会组织服务中心5楼"},
+            {id:41,name:"两岸一家亲委员工作室",leader:"陆雯",address:"上城区解放路189号-2"},
+            {id:42,name:"视觉之思委员工作室",leader:"何晓菲",address:"上城区虎玉路16-18号"},
+            {id:43,name:"育共体阳光行委员工作室",leader:"王梦婷",address:"上城区景芳三区58幢新社区邻里中心"},
+            {id:44,name:"非遗委员工作室",leader:"胡志强",address:"上城区大井巷55号"},
+            {id:45,name:"乐医汇委员工作室",leader:"潘乐屹",address:"上城区同协路1279号西子智慧产业园8号楼401室"},
+            {id:46,name:"全民阅读委员工作室",leader:"赵群伟",address:"上城区中山中路6号"},
+            {id:47,name:"健康九久委员工作室",leader:"李祖胜",address:"上城区九堡街道蓝桥卫生服务站"},
+            {id:48,name:"智汇钱潮委员工作室",leader:"沈波",address:"上城区小院书房"},
+            {id:49,name:"环境资源和农业界别委员工作室",leader:"熊义勤、骆鉴湖",address:"浙江大学华家池校区；杭州市上城区城星路中天国开大厦19楼"},
+            {id:50,name:"漱玉集委员工作室",leader:"王盈",address:"上城区紫阳街道闻潮路77号"}
+        ];
+
+const studioPhotos = {
+            1: "5. 委员履职平台/1-政协湖滨小组委员工作室-学习考察新质生产力一-万事利科创中心.webp",
+            2: "5. 委员履职平台/2-政协清波小组委员工作室-幸福清波，文化送福，联动中国美院为清波派出所、禁毒所、清波居民送新年祝福.webp",
+            3: "5. 委员履职平台/3-政协紫阳"三一"委员工作室-践行"委员说·委员做"，锚定"两个先行"目标，领跑"基层白治"之路.webp",
+            4: "5. 委员履职平台/4-采荷街道"幸福19"委员工作室-"疗愈经济分享体验会"活动.webp",
+            5: "5. 委员履职平台/5-政协四季青小组委员工作室-市区县三级联动，召开"投早投小投科技"专题协商会.webp",
+            6: "5. 委员履职平台/6-政协彭埠小组委员工作室-邀请非遗传承人开展非遗制作体验活动.webp",
+            7: "5. 委员履职平台/7-工会界别委员工作室-开展"美丽大讲堂"活动.webp",
+            8: "5. 委员履职平台/8-社会福利和保障界别委员工作室-残疾人之家的义卖活动.webp",
+            9: "5. 委员履职平台/9-"文润童心"委员工作室-传承和弘扬中华优秀传统文化，探索乡村优秀传统文化启蒙教育新路径.webp",
+            10: "5. 委员履职平台/10-全民阅读委员工作室-举办宋韵美学体验活动.webp",
+            11: "5. 委员履职平台/11-爱馨文化公益委员工作室-爱馨文化公益委员工作室.webp",
+            12: "5. 委员履职平台/12-"老爸好商量"委员工作室-发扬重视家庭教育优良传统，助力孩子健康快乐成长，举办亲子运动会.webp",
+            13: "5. 委员履职平台/13-有意思委员工作室-工作室委员与社区居民代表召开民生座谈会，听取居民对小区提升、菜场改造、停车难等问题的意见建议.webp",
+            14: "5. 委员履职平台/14-侨见未来委员工作室-关于社区居民空调安装纠纷的专项协商会.webp",
+            15: "5. 委员履职平台/15-张瑞旭委员工作室-举办委员工作室跨代共融日活动.webp",
+            16: "5. 委员履职平台/16-大健康委员工作室-传承国粹，践行公益，走进社区开展健康宣教义诊活动.webp",
+            17: "5. 委员履职平台/17-俞富康宋韵文化委员工作室-国际艺术交流送中国"福".webp",
+            18: "5. 委员履职平台/18-春泥委员工作室-两会期间迎新送福、送春联.webp",
+            19: "5. 委员履职平台/19-"邻聚力"委员工作室-凝聚社会公益慈善之心，开展"让每个孩子像花儿一样绽放"主题论坛.webp",
+            20: "5. 委员履职平台/20-建和社区委员工作室-党建引领，做好点滴惠民小事，走访慰问九和人家独居老人.webp",
+            21: "5. 委员履职平台/21-健康九久委员工作室-召开健康普及专题座谈会.webp",
+            22: "5. 委员履职平台/22-同心·共富委员工作室-举行"乡村音乐节"，用实用管用的好点子，助力乡村振兴.webp",
+            23: "5. 委员履职平台/23-茗荟聚智委员工作室-开展"茶韵议事"交流活动.webp",
+            24: "5. 委员履职平台/24-"育共体 阳光行"委员工作室-"小小政协委员"青少年模拟政协活动.webp",
+            25: "5. 委员履职平台/25-乐动新声委员工作室-委员工作室.webp"
+        };
+
+        function renderStudios(studios) {
+            const grid = document.getElementById('studiosGrid');
+            grid.innerHTML = studios.map(studio => `
+                <div class="studio-card" onclick="viewDetail(${studio.id})">
+                    ${studioPhotos[studio.id] ? '<img src="' + studioPhotos[studio.id] + '" alt="' + studio.name + '">' : ''}
+                    <div class="studio-info">
+                        <h3 class="studio-name">${studio.name}</h3>
+                        <p class="leader">负责人：${studio.leader}</p>
+                        <p class="address">${studio.address}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderStudios(studiosData);
+
+        function searchStudios() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = studiosData.filter(studio =>
+                studio.name.toLowerCase().includes(keyword) ||
+                studio.leader.toLowerCase().includes(keyword)
+            );
+            renderStudios(filtered);
+        }
+
+        document.getElementById('filterTags').addEventListener('click', function(e) {
+            if (e.target.classList.contains('filter-tag')) {
+                document.querySelectorAll('.filter-tag').forEach(tag => tag.classList.remove('active'));
+                e.target.classList.add('active');
+
+                const filter = e.target.dataset.filter;
+                if (filter === 'all') {
+                    renderStudios(studiosData);
+                } else {
+                    const filtered = studiosData.filter(studio =>
+                        studio.name.includes(filter) || studio.address.includes(filter)
+                    );
+                    renderStudios(filtered);
+                }
+            }
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchStudios();
+            }
+        });
+
+        function viewDetail(id) {
+            window.location.href = 'studio-detail-classic.html?id=' + id;
+        }
+    </script>
+</body>
+</html>
